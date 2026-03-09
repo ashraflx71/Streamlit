@@ -1,39 +1,42 @@
 import streamlit as st
 import pandas as pd
-from codecarbon import EmissionsTracker
-import os
+import plotly.express as px
 
-# --- إعداد مراقب الانبعاثات الكربونية ---
-tracker = EmissionsTracker(save_to_file=True, output_dir=".")
-tracker.start()
+# إعدادات الواجهة مع مراعاة المساحة
+st.set_page_config(page_title="أشرف 2026 - التحليل الذكي", layout="wide")
 
-# --- إعدادات الواجهة ---
-st.set_page_config(page_title="أشرف حسن - Green Analytics 2026", layout="wide")
+# عرض البيانات والتحليل في سطر واحد لتوفير المساحة
+col_title, col_seo = st.columns([2, 1])
 
-st.title("🌱 لوحة التحكم الخضراء لمشاريع أشرف")
+with col_title:
+    st.title("🚀 نظام التنبيه والـ SEO الذكي")
+
+with col_seo:
+    # محاكاة نصيحة SEO بناءً على البيانات
+    st.success("✅ **نصيحة اليوم:** الكلمات المفتاحية لمشروع 'Zacky' تتصدر البحث، ركز على 'تحديثات الأدوات' هذا الأسبوع.")
+
 st.markdown("---")
 
-# قسم الإحصائيات البيئية
-st.subheader("🌍 الأثر البيئي لتشغيل هذا التطبيق")
-col_env1, col_env2 = st.columns(2)
+# الرسوم البيانية - استخدام تقنية "التداخل" لتوفير المساحة
+tab1, tab2 = st.tabs(["📊 أداء الزيارات والبيئة", "📧 إعدادات التنبيهات"])
 
-# قراءة بيانات الانبعاثات (من ملف emissions.csv الذي تنشئه المكتبة تلقائياً)
-try:
-    emissions_df = pd.read_csv("emissions.csv")
-    current_emissions = emissions_df["emissions"].iloc[-1]
-    energy_consumed = emissions_df["energy_consumed"].iloc[-1]
+with tab1:
+    chart_data = pd.DataFrame({
+        'اليوم': ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+        'الزيارات': [450, 700, 1200, 900, 1100, 1500, 1300],
+        'SEO_Score': [70, 75, 85, 80, 88, 92, 90]
+    })
     
-    col_env1.metric("انبعاثات الكربون (كجم CO2)", f"{current_emissions:.6f}")
-    col_env2.metric("الطاقة المستهلكة (كيلوواط/ساعة)", f"{energy_consumed:.6f}")
-except:
-    st.info("جاري حساب البيانات البيئية... ستظهر الأرقام بعد قليل.")
+    # رسم بياني مدمج يوفر المساحة
+    fig = px.line(chart_data, x='اليوم', y=['الزيارات', 'SEO_Score'], 
+                  title="تطور الزيارات مقابل جودة الـ SEO",
+                  template="plotly_dark", markers=True)
+    st.plotly_chart(fig, use_container_width=True)
 
-# --- هنا نضع كود Google Analytics السابق ---
-st.markdown("---")
-st.subheader("📈 أداء المواقع (GA4)")
-if st.button('تحديث بيانات GA4 الآن 🔄'):
-    st.success("تم الاتصال بـ Google Analytics بنجاح!")
-    # (هنا يوضع كود جلب البيانات الذي شرحناه سابقاً)
+with tab2:
+    st.write("⚙️ **إعدادات سريعة:**")
+    email = st.text_input("بريدك الإلكتروني المستهدف:", value="ashraf@example.com")
+    if st.button("تفعيل نظام التنبيهات الذكي"):
+        st.write(f"سيتم إرسال تقرير SEO مختصر إلى: {email}")
 
-# إيقاف المراقب عند إغلاق التطبيق (اختياري)
-tracker.stop()
+

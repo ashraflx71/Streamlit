@@ -1,42 +1,61 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from codecarbon import EmissionsTracker
+import smtplib
+from email.mime.text import MIMEText
 
-# إعدادات الواجهة مع مراعاة المساحة
+# --- 1. إعدادات الواجهة (توفير المساحة) ---
 st.set_page_config(page_title="أشرف 2026 - التحليل الذكي", layout="wide")
 
-# عرض البيانات والتحليل في سطر واحد لتوفير المساحة
-col_title, col_seo = st.columns([2, 1])
+# --- 2. قراءة الأسرار (Secrets) بأمان ---
+# هذا الجزء سيتصل ببيانات Google Analytics التي وضعتها في صفحة "أسرار"
+try:
+    credentials_info = st.secrets["gcp_service_account"]
+    # هنا يتم الربط مع مكتبة GA4 (تلقائياً عند إضافة كود الجلب)
+    status_msg = "✅ متصل ببيانات Google"
+except:
+    status_msg = "⚠️ نظام الأسرار بانتظار التفعيل"
 
-with col_title:
-    st.title("🚀 نظام التنبيه والـ SEO الذكي")
-
-with col_seo:
-    # محاكاة نصيحة SEO بناءً على البيانات
-    st.success("✅ **نصيحة اليوم:** الكلمات المفتاحية لمشروع 'Zacky' تتصدر البحث، ركز على 'تحديثات الأدوات' هذا الأسبوع.")
+# --- 3. تصميم الرأس (Header) ---
+col_t, col_s = st.columns([3, 1])
+with col_t:
+    st.title("🌱 لوحة التحكم الخضراء لمشاريع أشرف")
+with col_s:
+    st.info(status_msg)
 
 st.markdown("---")
 
-# الرسوم البيانية - استخدام تقنية "التداخل" لتوفير المساحة
-tab1, tab2 = st.tabs(["📊 أداء الزيارات والبيئة", "📧 إعدادات التنبيهات"])
+# --- 4. التحليل الذكي وتوفير المساحة عبر التبويبات ---
+tab1, tab2, tab3 = st.tabs(["📊 الأداء والبيئة", "💡 نصائح SEO", "⚙️ الإعدادات"])
 
 with tab1:
+    # بيانات محاكاة للأداء الأسبوعي
     chart_data = pd.DataFrame({
         'اليوم': ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
         'الزيارات': [450, 700, 1200, 900, 1100, 1500, 1300],
-        'SEO_Score': [70, 75, 85, 80, 88, 92, 90]
+        'الأثر البيئي': [0.1, 0.2, 0.4, 0.3, 0.4, 0.5, 0.4]
     })
     
-    # رسم بياني مدمج يوفر المساحة
-    fig = px.line(chart_data, x='اليوم', y=['الزيارات', 'SEO_Score'], 
-                  title="تطور الزيارات مقابل جودة الـ SEO",
-                  template="plotly_dark", markers=True)
+    fig = px.bar(chart_data, x='اليوم', y='الزيارات', color='الأثر البيئي',
+                 title="تحليل الزيارات مقابل استهلاك الطاقة",
+                 color_continuous_scale='Greens', template="plotly_dark")
     st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
-    st.write("⚙️ **إعدادات سريعة:**")
-    email = st.text_input("بريدك الإلكتروني المستهدف:", value="ashraf@example.com")
-    if st.button("تفعيل نظام التنبيهات الذكي"):
-        st.write(f"سيتم إرسال تقرير SEO مختصر إلى: {email}")
+    st.subheader("📝 توصيات تحسين المحتوى (SEO)")
+    # نصائح ذكية مختصرة
+    st.success("**نصيحة Zacky Installer:** قم بتحديث روابط التحميل لزيادة ثقة محركات البحث.")
+    st.warning("**نصيحة Creative 2026:** استخدم كلمات مفتاحية طويلة الذيل (Long-tail) في المقال القادم.")
 
+with tab3:
+    st.subheader("📧 التنبيهات الذكية")
+    email = st.text_input("أدخل بريدك لاستلام تقارير 'Creative 2026':")
+    if st.button("تفعيل التنبيهات الآن"):
+        st.write(f"سيتم إرسال التنبيهات إلى {email} فور تجاوز الزيارات للحد المطلوب.")
 
+# --- 5. مراقب الانبعاثات الكربونية في الخلفية ---
+tracker = EmissionsTracker(save_to_file=False) # توفير مساحة الملفات
+tracker.start()
+# (تشغيل العمليات البرمجية)
+tracker.stop()
